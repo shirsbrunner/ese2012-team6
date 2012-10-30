@@ -20,7 +20,7 @@ subject: Password Reset
       Please change it directly after your next login.
 
 Sincerely
-Awesome Traiding App
+Awesome Trading App
 EOF
 
       Net::SMTP.enable_tls(OpenSSL::SSL::VERIFY_NONE)
