@@ -4,8 +4,8 @@ require 'rbtree'
 require_relative '../analytics/activity_logger'
 require_relative '../analytics/activity'
 require_relative '../store/system_user'
-require_relative '../security/password_generator'
-require_relative '../security/mail_client'
+require_relative '../helpers/security/password_generator'
+require_relative '../helpers/security/mail_client'
 
 module Store
   # Models a user that can log into the system and perform actions on items. It is able to create organizations which
@@ -137,14 +137,14 @@ module Store
         fetch_by(:id => id)
       end
 
-      # returns the user object which matches with the id or name
+      # returns the user object which matches with the :id or :name
       def fetch_by(args = {})
         return @@users_by_id[args[:id]] unless args[:id].nil?
         return @@users_by_name[args[:name]] unless args[:name].nil?
         nil
       end
 
-      # returns true if a user object exists with the id or name
+      # returns true if a user object exists with the :id or :name
       def exists?(args = {})
         return @@users_by_id.has_key?(args[:id]) unless args[:id].nil?
         @@users_by_name.has_key?(args[:name])

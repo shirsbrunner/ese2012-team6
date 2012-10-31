@@ -4,7 +4,6 @@ module Store
   # user's credits by a certain percentage. Handles user's credits after item trade
   class TradingAuthority
 
-
     CREDIT_REDUCE_RATE = 0.05 unless defined? CREDIT_REDUCE_RATE
     SELL_BONUS = 0.05 unless defined? SELL_BONUS
 
@@ -16,12 +15,14 @@ module Store
       self.last_refresh = Time.now
     end
 
+    # create new TradingAuthority with a timeout
     def self.timed(time)
       ta = TradingAuthority.new
       ta.credit_reduce_time = time
       ta
     end
 
+    # start governing trader's credits
     def start
       Thread.abort_on_exception = true
       self.last_refresh = Time.now

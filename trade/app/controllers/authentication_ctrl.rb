@@ -27,10 +27,6 @@ class Authentication < Sinatra::Application
     user = Store::User.by_name(name)
     user.reset_password
 
-    user = Store::User.by_name(name)
-    redirect back if user.nil?
-
-    user.reset_password
     redirect back
   end
 
@@ -51,8 +47,7 @@ class Authentication < Sinatra::Application
     redirect '/'
   end
 
-  # GET handler for logout request, logs out the user
-  # UG: TODO: Should be POST
+  # handler for logout request, logs out the user
   get '/logout' do
     redirect '/' unless @user
 

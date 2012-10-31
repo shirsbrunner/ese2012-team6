@@ -1,8 +1,8 @@
 require 'haml'
 require 'rdiscount'
 
-require_relative '../models/storage/picture_uploader'
-require_relative '../models/security/string_checker'
+require_relative '../models/helpers/storage/picture_uploader'
+require_relative '../models/helpers/security/string_checker'
 require_relative '../models/store/comment'
 
 # Handles all requests concerning item display, alteration and deletion
@@ -125,7 +125,8 @@ class Item < Sinatra::Application
   post '/item/:item_id/update_status' do
     redirect '/login' unless @user
 
-    activate_str = params[:activate]
+    activate = (params[:activate] == "true")
+
     item = Item.by_id(Integer(params[:item_id]))
 
     changed_owner = @user.open_item_page_time < item.edit_time && !@user.can_activate?(item)
@@ -133,7 +134,7 @@ class Item < Sinatra::Application
     redirect url('/error/not_owner_of_item') if changed_owner
     redirect "/item/#{params[:item_id]}" unless @user.can_activate?(item)
 
-    item.update_status(activate_str)
+    item.update_status(activate)
 
     redirect back
   end
@@ -182,7 +183,6 @@ class Item < Sinatra::Application
   # handles item deletion
   delete '/item/:item_id' do
     redirect '/login' unless @user
-    # UG: Check whether user can really delete item
 
     item_id = params[:item_id].to_i
     @user.delete_item(item_id)

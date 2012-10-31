@@ -1,10 +1,10 @@
 require_relative '../analytics/activity_logger'
 require_relative '../analytics/activity'
-require_relative '../security/string_checker'
+require_relative '../helpers/security/string_checker'
 require_relative '../store/comment'
 
 module Store
-  # The item is the central trading object within the application. It can be traded in between users for a certain price.
+  # The item is the central trading object within the application. It can be traded in between traders for a certain price.
   class Item
     attr_accessor :name, :id, :price, :owner, :active, :description, :edit_time, :image_path, :comments
     @@last_id = 0
@@ -59,20 +59,16 @@ module Store
       "#{self.name}, #{self.price}, #{self.owner}, #{self.active ? "active" : "inactive"}"
     end
 
-    # activate the item (you don't say...)
     def activate
       self.active = true
     end
 
-    # deactivate the item (thanks captain obvious)
     def deactivate
       self.active = false
     end
 
     # update the item's status
     def update_status(new_status, log = true)
-
-      new_status = (new_status == "true")
       old_status = self.active
 
       if old_status != new_status

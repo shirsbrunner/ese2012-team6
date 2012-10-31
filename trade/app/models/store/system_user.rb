@@ -25,7 +25,7 @@ module Store
       self.image_path = "/images/no_image.gif"
     end
 
-    # creates a new system user object
+    # creates a new system user object, options include :description and :credits
     def self.named(name, options = {})
       system_user = SystemUser.new
 
@@ -65,9 +65,10 @@ module Store
       end
     end
 
-    # deletes chosen item
+    # deletes chosen item, raises error if user can not delete item
     def delete_item(item_id, log = true)
       item = Item.by_id(item_id)
+
       fail if item.nil?
       fail unless self.can_delete?(item)
 
@@ -77,7 +78,8 @@ module Store
       Analytics::ItemDeleteActivity.with_remover_item(self, item).log if log
     end
 
-    # handles the shop of an item
+    # handles the shop of an item , returns true if buy process was successfull, false otherwise
+    # also returns error code
     def buy_item(item, log = true)
       seller = item.owner
 
@@ -133,12 +135,11 @@ module Store
       "#{self.name}, #{self.credits}"
     end
 
-    # returns false when a system user object calls this method
     def is_organization?
       false
     end
 
-    # sends a certain amount of money from the user to a certain organization
+    # sends a certain amount of money from the user/org to a another user/org
     def send_money_to(receiver, amount)
       fail if receiver.nil?
       return false unless self.credits >= amount
@@ -198,7 +199,7 @@ module Store
         User.all.concat(Organization.all)
       end
 
-      # returns true if the system includes a certain user or organization object
+      # returns true if the system includes a certain user or organization object, args must include keys :id xor :name
       def exists?(args = {})
         User.exists?(args) || Organization.exists?(args)
       end
